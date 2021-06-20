@@ -5,6 +5,7 @@
  */
 package view.gui;
 
+import controller.DaoLivro;
 import javax.swing.JOptionPane;
 import model.design.Livro;
 import view.modelo.TabelaLivro;
@@ -16,6 +17,8 @@ import view.modelo.TabelaLivro;
 public class FormLivro extends javax.swing.JFrame {
     //Objeto de modelo de tabela
     TabelaLivro modelo = new TabelaLivro();
+    //Criação e instancia da classe Dao
+    DaoLivro dlivro = new DaoLivro();
    
     /**
      * Creates new form FormLivro
@@ -23,7 +26,17 @@ public class FormLivro extends javax.swing.JFrame {
     public FormLivro() {
         initComponents();
         tblLivro.setModel(modelo);
+        this.lerTabela();
         
+    }
+    
+    private void lerTabela(){
+      //Limpar a tabela antes
+      modelo.limparTabela();
+        for(Livro l: dlivro.read()){
+            modelo.addRow(l);
+            
+        }
     }
 
     /**
@@ -226,14 +239,19 @@ public class FormLivro extends javax.swing.JFrame {
              int linha = tblLivro.getSelectedRow();
         
         if(linha != -1){
-            modelo.setValueAt(txtTitulo.getText(), linha, 0);
-            modelo.setValueAt(txtCategoria.getText(), linha, 1);
-            modelo.setValueAt(txtAutor.getText(), linha, 2);
-            modelo.setValueAt(txtAno.getText(), linha, 3);
+            dlivro.update(new Livro(txtTitulo.getText(), txtCategoria.getText(), txtAutor.getText(), Integer.parseInt(txtAno.getText())));
+            
+                    
+                    
+           // modelo.setValueAt(txtTitulo.getText(), linha, 0);
+           // modelo.setValueAt(txtCategoria.getText(), linha, 1);
+           // modelo.setValueAt(txtAutor.getText(), linha, 2);
+           // modelo.setValueAt(txtAno.getText(), linha, 3);
             
     }        
         
         this.btnLimparActionPerformed(evt);
+        this.lerTabela();
         
     }//GEN-LAST:event_btnAlterarActionPerformed
 
@@ -245,17 +263,22 @@ public class FormLivro extends javax.swing.JFrame {
         // TODO add your handling code here:
         //Configurando o botão gravar
       try {
-          modelo.addRow(
-          new Livro(txtTitulo.getText(), txtCategoria.getText(), txtAutor.getText(), Integer.parseInt(txtAno.getText()))
+          dlivro.create(new Livro(txtAutor.getText(), txtCategoria.getText(), txtAutor.getText(), Integer.parseInt(txtAno.getText())));
+          
+          
+      
+         // modelo.addRow(
+         // new Livro(txtTitulo.getText(), txtCategoria.getText(), txtAutor.getText(), Integer.parseInt(txtAno.getText()))
                   
-          );
+         // );
           
       }catch (NumberFormatException e){
           JOptionPane.showMessageDialog(this, "Erro" + e.getMessage(), "Não foi possivel realizar essa ação.", JOptionPane.ERROR_MESSAGE);
-      }
+     }
       
       //Limpar
       this.btnLimparActionPerformed(evt);
+      this.lerTabela();
       
     }//GEN-LAST:event_btnGravarActionPerformed
 
@@ -290,7 +313,10 @@ public class FormLivro extends javax.swing.JFrame {
         int linha = tblLivro.getSelectedRow();
          
        if (linha != -1) {
-           if(JOptionPane.showConfirmDialog(this,"Deseja excluir essa informação?", "Atenção!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) modelo.removeRow(linha);
+           if(JOptionPane.showConfirmDialog(this,"Deseja excluir essa informação?", "Atenção!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION){
+               //modelo.removeRow(linha);
+               dlivro.delete(new Livro(txtTitulo.getText(), txtCategoria.getText(), txtAutor.getText(), Integer.parseInt(txtAno.getText())));
+           }
        }
        
        this.btnLimparActionPerformed(evt);

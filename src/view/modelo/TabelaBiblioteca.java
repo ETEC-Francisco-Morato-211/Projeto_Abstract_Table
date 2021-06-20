@@ -21,6 +21,10 @@ public class TabelaBiblioteca extends AbstractTableModel {
     //Vetor 
     private String[] colunas = {"Nome", "Código"};
     
+    public void LimparTabela(){
+        biblioteca.clear();
+        
+    }
     
 
     @Override

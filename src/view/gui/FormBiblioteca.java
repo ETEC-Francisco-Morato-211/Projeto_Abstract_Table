@@ -5,6 +5,7 @@
  */
 package view.gui;
 
+import controller.DaoBiblioteca;
 import javax.swing.JOptionPane;
 import model.design.Biblioteca;
 import view.modelo.TabelaBiblioteca;
@@ -16,6 +17,8 @@ import view.modelo.TabelaBiblioteca;
 public class FormBiblioteca extends javax.swing.JFrame {
     //Objeto de modelo de tabela
     TabelaBiblioteca modelo = new TabelaBiblioteca();
+    DaoBiblioteca dBiblioteca = new DaoBiblioteca();
+    
 
     /**
      * Creates new form FormBiblioteca
@@ -23,7 +26,18 @@ public class FormBiblioteca extends javax.swing.JFrame {
     public FormBiblioteca() {
         initComponents();
         tblBiblioteca.setModel(modelo);
+        this.LerTAbela();
         
+    }
+    
+    private void LerTAbela(){
+        
+        modelo.LimparTabela();
+       
+        
+        for (Biblioteca b: dBiblioteca.read()){
+            modelo.addRow(b);
+        }
     }
 
     /**
@@ -184,12 +198,16 @@ public class FormBiblioteca extends javax.swing.JFrame {
         int linha = tblBiblioteca.getSelectedRow();
         
         if(linha != -1){
-            modelo.setValueAt(txtNome.getText(), linha, 0);
-            modelo.setValueAt(txtNome.getText(), linha, 1);
+            dBiblioteca.update(new Biblioteca(txtNome.getText(), Integer.parseInt(txtCodigo.getText())));
+            //modelo.setValueAt(txtNome.getText(), linha, 0);
+           // modelo.setValueAt(txtNome.getText(), linha, 1);
+            
+            
             
         }
         
         this.btnLimparbActionPerformed(evt);
+        this.LerTAbela();
         
     }//GEN-LAST:event_btnAlterarbActionPerformed
 
@@ -198,11 +216,16 @@ public class FormBiblioteca extends javax.swing.JFrame {
          int linha = tblBiblioteca.getSelectedRow();
          
        if (linha != -1) {
-           if(JOptionPane.showConfirmDialog(this, "Deseja excluir essa informação?", "Atenção!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)== JOptionPane.YES_OPTION);
-            modelo.removeRow(linha);
+           if(JOptionPane.showConfirmDialog(this, "Deseja excluir essa informação?", "Atenção!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)== JOptionPane.YES_OPTION){
+               dBiblioteca.delete(new Biblioteca(txtNome.getText(), Integer.parseInt(txtCodigo.getText())));
+               
+           }
+           // modelo.removeRow(linha);
+           
        }
        
        this.btnLimparbActionPerformed(evt);
+       this.LerTAbela();
     }//GEN-LAST:event_btnExcluirbActionPerformed
 
     private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed
@@ -212,13 +235,13 @@ public class FormBiblioteca extends javax.swing.JFrame {
     private void btnGravarbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGravarbActionPerformed
         // TODO add your handling code here:
         try{
-            modelo.addRow(
-                    new Biblioteca(txtNome.getText(), Integer.parseInt(txtCodigo.getText()))
-                    
+            dBiblioteca.create(new Biblioteca(txtNome.getText(), Integer.parseInt(txtCodigo.getText())));
             
             
-            
-            );
+            //modelo.addRow(
+                   /// new Biblioteca(txtNome.getText(), Integer.parseInt(txtCodigo.getText()))
+
+           // );
         }catch (NumberFormatException e){
         JOptionPane.showMessageDialog(this, "ERRO" + e.getMessage(), "Não foi possivel realizar essa ação", JOptionPane.ERROR_MESSAGE);
     }

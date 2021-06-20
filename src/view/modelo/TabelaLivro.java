@@ -20,6 +20,11 @@ public class TabelaLivro extends AbstractTableModel {
     
     //Vetor 
     private String[] colunas = {"Título", "Categoria", "Autor", "Ano"};
+    
+    
+    public void limparTabela(){
+        livro.clear();
+    }
 
     
     
